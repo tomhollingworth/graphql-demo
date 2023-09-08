@@ -1,0 +1,17 @@
+# GraphQL Example 5
+query Example5 {
+  queryEquipmentClass(first: 1) @cascade(fields:["activeVersion"]) {
+    id
+    activeVersion @cascade(fields:["properties"]) {
+      # EquipmentClassVersion
+      iid
+      id
+      properties(filter:{label:{eq:"PROP1"}}){
+        label
+      }
+    }
+  }
+  queryEquipment(filter: { id: { eq: "Kitchen" } }) {
+    id
+  }
+}

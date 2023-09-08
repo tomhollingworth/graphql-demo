@@ -1,0 +1,11 @@
+# Graphql Example 4
+query Example4($parameter1: String) {
+  Equipment: queryEquipment(filter: { id: { eq: $parameter1 } }) {
+    Name: id
+  }
+}
+
+# Query Variables
+{
+  "parameter1": "Kitchen"
+}

@@ -1,0 +1,15 @@
+# GraphQL Example 7
+mutation Example7($filter: UnitOfMeasureFilter!){
+  deleteUnitOfMeasure(filter: $filter) {
+    numUids
+  }
+}
+
+# Variables
+{
+  "filter": {
+    "id": {
+      "eq": "example unit of measure"
+    }
+  }
+}

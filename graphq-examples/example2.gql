@@ -1,0 +1,28 @@
+# GraphQL Example 2
+query  Example2 {
+  queryEquipmentClass{
+    id
+    activeVersion {
+      # EquipmentClassVersion
+      iid
+      id
+      version
+      # EquimpentClassProperty
+      properties {
+        id
+        label
+        description
+        propertyType
+        value
+        valueUnitOfMeasure {
+         id
+         dataType
+        }
+        bindingType
+        triggersRules {
+          iid
+        }
+      }
+    }
+  }
+}

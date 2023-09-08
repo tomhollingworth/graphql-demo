@@ -1,0 +1,6 @@
+# Graphql Example 1
+query Example1 {
+  queryEquipment(filter: { id: { eq: "Kitchen" } }) {
+    id
+  }
+}
