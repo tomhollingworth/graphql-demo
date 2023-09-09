@@ -1,0 +1,55 @@
+directive @goModel(model: String, models: [String!]) on OBJECT
+  | INPUT_OBJECT
+  | SCALAR
+  | ENUM
+  | INTERFACE
+  | UNION
+
+directive @goField(forceResolver: Boolean, name: String) on INPUT_FIELD_DEFINITION
+  | FIELD_DEFINITION
+
+
+scalar DateTime
+
+input DateTimeRange {
+  max: DateTime!
+  min: DateTime!
+}
+
+extend type EquipmentProperty @key(fields: "id") {
+  id:ID! @external
+  history(filter: DateTimeRange): [History]
+}
+
+type History {
+  equipmentProperty: EquipmentProperty! @external
+  timestamp: DateTime!
+  value: String!
+  datatype: DataType!
+}
+
+enum DataType {
+  STRING
+  INT
+  FLOAT
+}
+
+input FilterHistory {
+  timestamp: DateTimeRange
+  propertyID: String
+}
+
+type Query {
+  history(filter:FilterHistory!): [History!]!
+}
+
+input NewHistory {  
+  propertyID: String!
+  timestamp: DateTime!
+  value: String!
+  datatype: DataType! 
+}
+
+type Mutation {
+  createHistory(input: NewHistory!): History!
+}
