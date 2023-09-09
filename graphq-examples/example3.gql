@@ -1,4 +1,4 @@
-# Graphql Example 3
+# GraphQL Example 3
 query Example3($parameter1: String) {
   queryEquipment(filter: { id: { eq: $parameter1 } }) {
     id
