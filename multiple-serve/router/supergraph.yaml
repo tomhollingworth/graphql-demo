@@ -1,0 +1,15 @@
+federation_version: =2.3.2
+subgraphs:
+  sql:
+    routing_url: http://localhost:8081/
+    schema:
+      file: ./sql-proxy/graph/schema.graphqls
+  influx:
+    routing_url: http://localhost:8080/
+    schema:
+      file: ./influxdb-proxy/graph/schema.graphqls
+  ## Add other supergraphs here as required e.g.
+  # spacex:
+  #  routing_url: https://spacex-production.up.railway.app
+  #  schema:
+  #    schema_url: https://spacex-production.up.railway.app

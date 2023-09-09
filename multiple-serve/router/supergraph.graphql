@@ -1,0 +1,152 @@
+schema
+  @link(url: "https://specs.apollo.dev/link/v1.0")
+  @link(url: "https://specs.apollo.dev/join/v0.3", for: EXECUTION)
+{
+  query: Query
+  mutation: Mutation
+}
+
+directive @join__enumValue(graph: join__Graph!) repeatable on ENUM_VALUE
+
+directive @join__field(graph: join__Graph, requires: join__FieldSet, provides: join__FieldSet, type: String, external: Boolean, override: String, usedOverridden: Boolean) repeatable on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
+
+directive @join__graph(name: String!, url: String!) on ENUM_VALUE
+
+directive @join__implements(graph: join__Graph!, interface: String!) repeatable on OBJECT | INTERFACE
+
+directive @join__type(graph: join__Graph!, key: join__FieldSet, extension: Boolean! = false, resolvable: Boolean! = true, isInterfaceObject: Boolean! = false) repeatable on OBJECT | INTERFACE | UNION | ENUM | INPUT_OBJECT | SCALAR
+
+directive @join__unionMember(graph: join__Graph!, member: String!) repeatable on UNION
+
+directive @link(url: String, as: String, for: link__Purpose, import: [link__Import]) repeatable on SCHEMA
+
+enum DataType
+  @join__type(graph: INFLUX)
+{
+  STRING @join__enumValue(graph: INFLUX)
+  INT @join__enumValue(graph: INFLUX)
+  FLOAT @join__enumValue(graph: INFLUX)
+}
+
+scalar DateTime
+  @join__type(graph: INFLUX)
+
+input DateTimeRange
+  @join__type(graph: INFLUX)
+{
+  max: DateTime!
+  min: DateTime!
+}
+
+type Equipment
+  @join__type(graph: SQL)
+{
+  id: ID!
+  name: String!
+  description: String
+  properties: [EquipmentProperty!]!
+}
+
+type EquipmentProperty
+  @join__type(graph: INFLUX, key: "id")
+  @join__type(graph: SQL)
+{
+  id: ID!
+  history: [History] @join__field(graph: INFLUX)
+  description: String! @join__field(graph: SQL)
+  equipment: Equipment! @join__field(graph: SQL)
+}
+
+input EquipmentRef
+  @join__type(graph: SQL)
+{
+  id: ID!
+}
+
+input FilterEquipmentProperty
+  @join__type(graph: SQL)
+{
+  id: ID
+  equipment: EquipmentRef
+}
+
+input FilterHistory
+  @join__type(graph: INFLUX)
+{
+  timestamp: DateTimeRange
+  propertyID: String
+}
+
+type History
+  @join__type(graph: INFLUX)
+{
+  timestamp: DateTime!
+  value: String!
+  datatype: DataType!
+}
+
+scalar join__FieldSet
+
+enum join__Graph {
+  INFLUX @join__graph(name: "influx", url: "http://localhost:8080/")
+  SQL @join__graph(name: "sql", url: "http://localhost:8081/")
+}
+
+scalar link__Import
+
+enum link__Purpose {
+  """
+  `SECURITY` features provide metadata necessary to securely resolve fields.
+  """
+  SECURITY
+
+  """
+  `EXECUTION` features provide metadata necessary for operation execution.
+  """
+  EXECUTION
+}
+
+type Mutation
+  @join__type(graph: INFLUX)
+  @join__type(graph: SQL)
+{
+  createHistory(input: NewHistory!): History! @join__field(graph: INFLUX)
+  createEquipment(input: NewEquipment!): Equipment! @join__field(graph: SQL)
+  createEquipmentProperty(input: NewEquipmentProperty!): EquipmentProperty! @join__field(graph: SQL)
+  deleteEquipment(id: ID!): Boolean! @join__field(graph: SQL)
+  deleteEquipmentProperty(id: ID!): Boolean! @join__field(graph: SQL)
+}
+
+input NewEquipment
+  @join__type(graph: SQL)
+{
+  id: String!
+  name: String!
+  description: String
+}
+
+input NewEquipmentProperty
+  @join__type(graph: SQL)
+{
+  id: ID!
+  description: String
+  equipment: EquipmentRef!
+}
+
+input NewHistory
+  @join__type(graph: INFLUX)
+{
+  propertyID: String!
+  timestamp: DateTime!
+  value: String!
+  datatype: DataType!
+}
+
+type Query
+  @join__type(graph: INFLUX)
+  @join__type(graph: SQL)
+{
+  history(filter: FilterHistory!): [History!]! @join__field(graph: INFLUX)
+  equipment: [Equipment!]! @join__field(graph: SQL)
+  equipmentProperty(filter: FilterEquipmentProperty): [EquipmentProperty!]! @join__field(graph: SQL)
+}

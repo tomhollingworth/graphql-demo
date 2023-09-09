@@ -1,0 +1,14 @@
+cors:
+  allow_any_origin: true
+supergraph:
+  introspection: true
+  listen: "0.0.0.0:80"
+homepage:
+  enabled: false
+sandbox:
+  enabled: true
+override_subgraph_url:
+  sql: "http://sql-proxy:8081/query"
+  influx: "http://influxdb-proxy:8080/query"
+include_subgraph_errors:
+  all: true
