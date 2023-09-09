@@ -1,0 +1,55 @@
+directive @goModel(model: String, models: [String!]) on OBJECT
+  | INPUT_OBJECT
+  | SCALAR
+  | ENUM
+  | INTERFACE
+  | UNION
+
+directive @goField(forceResolver: Boolean, name: String) on INPUT_FIELD_DEFINITION
+  | FIELD_DEFINITION
+
+type Equipment {
+  id: ID!
+  name: String!
+  description: String
+  properties: [EquipmentProperty!]!
+}
+
+type EquipmentProperty {
+  id: ID!
+  description: String!
+  equipment: Equipment!
+}
+
+type Query {
+  equipment: [Equipment!]!
+  equipmentProperty(filter: FilterEquipmentProperty): [EquipmentProperty!]!
+}
+
+input FilterEquipmentProperty {
+  id: ID
+  equipment: EquipmentRef
+}
+
+input NewEquipment {
+  id: String!
+  name: String!
+  description: String
+}
+
+input NewEquipmentProperty{
+  id: ID!
+  description: String
+  equipment: EquipmentRef!
+}
+
+input EquipmentRef {
+  id: ID!
+}
+
+type Mutation {
+  createEquipment(input: NewEquipment!): Equipment!
+  createEquipmentProperty(input: NewEquipmentProperty!): EquipmentProperty!
+  deleteEquipment(id: ID!): Boolean!
+  deleteEquipmentProperty(id: ID!): Boolean!
+}
