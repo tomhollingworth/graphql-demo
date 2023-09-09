@@ -1,0 +1,51 @@
+version: '3'
+
+services:
+  influxdb:
+    image: influxdb:2.6-alpine
+    container_name: influxdb
+    env_file:
+      - influxv2.env
+    volumes:
+      # Mount for influxdb data directory and configuration
+      - influxdbv2:/var/lib/influxdb2:rw
+    ports:
+      - 8086:8086
+  influxdb-proxy:
+    build: ./influxdb-proxy
+    container_name: influxdb-proxy
+    depends_on:
+      - influxdb
+    ports:
+      - "8080:8080"
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres
+    ports: 
+      - "5432:5432"
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    env_file:
+      - postgres.env
+  sql-proxy:
+    build: ./sql-proxy
+    container_name: sql-graphql
+    depends_on:
+      - postgres
+    ports:
+      - "8081:8081"
+  # router:
+  #   image: ghcr.io/apollographql/router:v1.15.1
+  #   container_name: router
+  #   depends_on:
+  #     - sql-proxy
+  #     - influxdb-proxy
+  #   command: --config /dist/config/router.yaml --supergraph /dist/config/schema.graphql
+  #   ports:
+  #     - 80:80
+  #   volumes: 
+  #     - ./router/config.yaml:/dist/config/router.yaml
+  #     - ./router/supergraph.graphql:/dist/config/schema.graphql
+volumes:
+  influxdbv2:
+  postgres:
