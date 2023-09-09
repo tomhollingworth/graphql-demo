@@ -34,18 +34,18 @@ services:
       - postgres
     ports:
       - "8081:8081"
-  # router:
-  #   image: ghcr.io/apollographql/router:v1.15.1
-  #   container_name: router
-  #   depends_on:
-  #     - sql-proxy
-  #     - influxdb-proxy
-  #   command: --config /dist/config/router.yaml --supergraph /dist/config/schema.graphql
-  #   ports:
-  #     - 80:80
-  #   volumes: 
-  #     - ./router/config.yaml:/dist/config/router.yaml
-  #     - ./router/supergraph.graphql:/dist/config/schema.graphql
+  router:
+    image: ghcr.io/apollographql/router:v1.15.1
+    container_name: router
+    depends_on:
+      - sql-proxy
+      - influxdb-proxy
+    command: --config /dist/config/router.yaml --supergraph /dist/config/schema.graphql
+    ports:
+      - 80:80
+    volumes: 
+      - ./router/config.yaml:/dist/config/router.yaml
+      - ./router/supergraph.graphql:/dist/config/schema.graphql
 volumes:
   influxdbv2:
   postgres:
