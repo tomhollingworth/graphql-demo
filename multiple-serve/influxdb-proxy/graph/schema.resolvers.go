@@ -60,16 +60,12 @@ func (r *queryResolver) History(ctx context.Context, filter domain.FilterHistory
 	q += `|> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
 `
 
-	fmt.Println(q)
 	result, err := queryAPI.Query(context.Background(), q)
 	history := make([]*domain.History, 0)
 	if err == nil {
 		// Iterate over query response
 		for result.Next() {
 			// Notice when group key has changed
-			if result.TableChanged() {
-				fmt.Printf("table: %s\n", result.TableMetadata().String())
-			}
 			// Access data
 			dt, ok := result.Record().ValueByKey("datatype").(string)
 			if !ok {
