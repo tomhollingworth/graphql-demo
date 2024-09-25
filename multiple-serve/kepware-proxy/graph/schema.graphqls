@@ -1,0 +1,47 @@
+directive @goModel(model: String, models: [String!]) on OBJECT
+  | INPUT_OBJECT
+  | SCALAR
+  | ENUM
+  | INTERFACE
+  | UNION
+
+directive @goField(forceResolver: Boolean, name: String) on INPUT_FIELD_DEFINITION
+  | FIELD_DEFINITION
+
+scalar DateTime
+
+scalar Any
+
+input DateTimeRange {
+  max: DateTime!
+  min: DateTime!
+}
+
+enum DataType {
+  STRING
+  INT
+  FLOAT
+  UNKNOWN
+  BOOLEAN
+  OTHER
+}
+
+extend type EquipmentProperty @key(fields: "id") {
+  id:ID! @external
+  address: String @external
+  timestamp: DateTime @requires(fields: ["address"])
+  datatype: DataType @requires(fields: ["address"])
+  value: Any @requires(fields: ["address"])
+}
+
+type Tag {
+  address: String!
+  timestamp: DateTime!
+  datatype: DataType!
+  value: Any!
+}
+
+type Query{
+  readTag(address: String!): Tag
+  queryTag(addresses: [String!]!): [Tag]
+}
