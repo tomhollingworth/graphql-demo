@@ -28,7 +28,7 @@ func init() {
 	}
 	_, err = db.Query("SELECT * FROM equipment_property LIMIT 1")
 	if err != nil {
-		if _, err := db.Exec("CREATE TABLE IF NOT EXISTS equipment_property (id text PRIMARY KEY, description TEXT NOT NULL, equipment_id text NOT NULL, FOREIGN KEY (equipment_id) REFERENCES equipment (id))"); err != nil {
+		if _, err := db.Exec("CREATE TABLE IF NOT EXISTS equipment_property (id text PRIMARY KEY, address text, description TEXT NOT NULL, equipment_id text NOT NULL, FOREIGN KEY (equipment_id) REFERENCES equipment (id))"); err != nil {
 			panic(err)
 		}
 	}

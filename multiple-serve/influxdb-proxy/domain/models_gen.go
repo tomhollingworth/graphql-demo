@@ -16,6 +16,7 @@ type DateTimeRange struct {
 
 type EquipmentProperty struct {
 	ID      string     `json:"id"`
+	Address *string    `json:"address,omitempty"`
 	History []*History `json:"history,omitempty"`
 }
 
@@ -33,6 +34,9 @@ type History struct {
 	Datatype          DataType           `json:"datatype"`
 }
 
+type Mutation struct {
+}
+
 type NewHistory struct {
 	PropertyID string    `json:"propertyID"`
 	Timestamp  time.Time `json:"timestamp"`
@@ -40,23 +44,32 @@ type NewHistory struct {
 	Datatype   DataType  `json:"datatype"`
 }
 
+type Query struct {
+}
+
 type DataType string
 
 const (
-	DataTypeString DataType = "STRING"
-	DataTypeInt    DataType = "INT"
-	DataTypeFloat  DataType = "FLOAT"
+	DataTypeString  DataType = "STRING"
+	DataTypeInt     DataType = "INT"
+	DataTypeFloat   DataType = "FLOAT"
+	DataTypeUnknown DataType = "UNKNOWN"
+	DataTypeBoolean DataType = "BOOLEAN"
+	DataTypeOther   DataType = "OTHER"
 )
 
 var AllDataType = []DataType{
 	DataTypeString,
 	DataTypeInt,
 	DataTypeFloat,
+	DataTypeUnknown,
+	DataTypeBoolean,
+	DataTypeOther,
 }
 
 func (e DataType) IsValid() bool {
 	switch e {
-	case DataTypeString, DataTypeInt, DataTypeFloat:
+	case DataTypeString, DataTypeInt, DataTypeFloat, DataTypeUnknown, DataTypeBoolean, DataTypeOther:
 		return true
 	}
 	return false

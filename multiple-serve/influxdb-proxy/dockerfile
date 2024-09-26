@@ -1,4 +1,4 @@
-FROM golang:1.20 AS builder
+FROM golang:1.23 AS builder
 
 # Set necessary environmet variables needed for our image
 ENV GO111MODULE=on \
@@ -33,7 +33,7 @@ FROM scratch
 #copy the build file and the timezone info into scratch
 COPY --from=builder /dist/influxdb-proxy /
 
-EXPOSE 8080
+EXPOSE 8082
 
 # COPY --from=builder /usr/local/go/lib/time/zoneinfo.zip /
 # ENV ZONEINFO=/zoneinfo.zip

@@ -12,6 +12,7 @@ type Equipment struct {
 type EquipmentProperty struct {
 	ID          string     `json:"id"`
 	Description string     `json:"description"`
+	Address     *string    `json:"address,omitempty"`
 	Equipment   *Equipment `json:"equipment"`
 }
 
@@ -24,6 +25,9 @@ type FilterEquipmentProperty struct {
 	Equipment *EquipmentRef `json:"equipment,omitempty"`
 }
 
+type Mutation struct {
+}
+
 type NewEquipment struct {
 	ID          string  `json:"id"`
 	Name        string  `json:"name"`
@@ -33,5 +37,9 @@ type NewEquipment struct {
 type NewEquipmentProperty struct {
 	ID          string        `json:"id"`
 	Description *string       `json:"description,omitempty"`
+	Address     *string       `json:"address,omitempty"`
 	Equipment   *EquipmentRef `json:"equipment"`
+}
+
+type Query struct {
 }
