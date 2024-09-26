@@ -1,4 +1,4 @@
-module github.com/thollingworth/graphql-demo/multiple-serve/kepware-proxy
+module github.com/thollingworth/graphql-demo/multiple-serve/opcua-proxy
 
 go 1.22.5
 

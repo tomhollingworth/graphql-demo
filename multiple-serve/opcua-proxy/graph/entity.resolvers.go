@@ -8,7 +8,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/thollingworth/graphql-demo/multiple-serve/kepware-proxy/domain"
+	"github.com/thollingworth/graphql-demo/multiple-serve/opcua-proxy/domain"
 )
 
 // FindEquipmentPropertyByID is the resolver for the findEquipmentPropertyByID field.

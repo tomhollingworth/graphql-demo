@@ -11,7 +11,7 @@ import (
 
 	"github.com/gopcua/opcua"
 	"github.com/gopcua/opcua/ua"
-	"github.com/thollingworth/graphql-demo/multiple-serve/kepware-proxy/domain"
+	"github.com/thollingworth/graphql-demo/multiple-serve/opcua-proxy/domain"
 )
 
 type OpcuaClient struct {

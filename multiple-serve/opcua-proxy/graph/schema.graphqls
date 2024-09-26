@@ -29,9 +29,9 @@ enum DataType {
 extend type EquipmentProperty @key(fields: "id") {
   id:ID! @external
   address: String @external
-  timestamp: DateTime @requires(fields: ["address"])
-  datatype: DataType @requires(fields: ["address"])
-  value: Any @requires(fields: ["address"])
+  timestamp: DateTime @requires(fields: "address") @provides(fields:["datatype", "value"])
+  datatype: DataType @requires(fields: "address") @provides(fields:["timestamp", "value"])
+  value: Any @requires(fields: "address") @provides(fields:["timestamp", "datatype"])
 }
 
 type Tag {

@@ -11,6 +11,11 @@ exec:
 federation:
   filename: graph/federation.go
   package: graph
+  version: 2
+  options:
+    computed_requires: true
+
+call_argument_directives_with_null: true
 
 # Where should any generated models go?
 model:
@@ -66,7 +71,7 @@ resolver:
 # gqlgen will search for any type names in the schema in these go packages
 # if they match it will use them, otherwise it will generate them.
 # autobind:
-#  - "github.com/tomhollingworth/graphql-demo/multiple-serve/kepware-proxy/graph/model"
+#  - "github.com/tomhollingworth/graphql-demo/multiple-serve/opcua-proxy/graph/model"
 
 # This section declares type mapping between the GraphQL and go type systems
 #

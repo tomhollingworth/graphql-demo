@@ -9,11 +9,11 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/thollingworth/graphql-demo/multiple-serve/kepware-proxy/graph"
-	"github.com/thollingworth/graphql-demo/multiple-serve/kepware-proxy/internal"
+	"github.com/thollingworth/graphql-demo/multiple-serve/opcua-proxy/graph"
+	"github.com/thollingworth/graphql-demo/multiple-serve/opcua-proxy/internal"
 )
 
-const defaultPort = "8081"
+const defaultPort = "8083"
 
 var (
 	connectionString = "opc.tcp://127.0.0.1:49320"

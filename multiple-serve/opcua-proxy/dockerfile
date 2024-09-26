@@ -1,0 +1,43 @@
+FROM golang:1.23 AS builder
+
+# Set necessary environmet variables needed for our image
+ENV GO111MODULE=on \
+    CGO_ENABLED=0 \
+    GOOS=linux \
+    GOARCH=amd64
+
+# Move to working directory /build
+WORKDIR /build
+
+# Copy and download dependency using go mod
+COPY /go.mod .
+COPY /go.sum .
+
+RUN go mod download
+
+# Copy the code into the container
+COPY / .
+
+# Build the application
+RUN go build -o opcua-proxy .
+
+# Move to /dist directory as the place for resulting binary folder
+WORKDIR /dist
+
+# Copy binary from build
+RUN cp /build/opcua-proxy .
+
+# Build a small image
+FROM scratch
+
+#copy the build file and the timezone info into scratch
+COPY --from=builder /dist/opcua-proxy /
+
+EXPOSE 8082
+
+ENV OPCUA_ENDPOINT="opc.tcp://host.docker.internal:49320"
+
+# COPY --from=builder /usr/local/go/lib/time/zoneinfo.zip /
+# ENV ZONEINFO=/zoneinfo.zip
+# Command to run
+ENTRYPOINT ["/opcua-proxy"]

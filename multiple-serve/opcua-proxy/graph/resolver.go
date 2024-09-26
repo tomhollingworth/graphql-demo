@@ -1,6 +1,6 @@
 package graph
 
-import "github.com/thollingworth/graphql-demo/multiple-serve/kepware-proxy/internal"
+import "github.com/thollingworth/graphql-demo/multiple-serve/opcua-proxy/internal"
 
 // This file will not be regenerated automatically.
 //
