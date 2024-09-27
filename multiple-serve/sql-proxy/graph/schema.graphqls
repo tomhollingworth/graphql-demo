@@ -8,14 +8,14 @@ directive @goModel(model: String, models: [String!]) on OBJECT
 directive @goField(forceResolver: Boolean, name: String) on INPUT_FIELD_DEFINITION
   | FIELD_DEFINITION
 
-type Equipment {
+type Equipment @key(fields:"id") {
   id: ID!
   name: String!
   description: String
   properties: [EquipmentProperty!]!
 }
 
-type EquipmentProperty {
+type EquipmentProperty @key(fields: "id") {
   id: ID!
   description: String!
   address: String

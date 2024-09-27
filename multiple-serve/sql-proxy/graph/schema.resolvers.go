@@ -42,7 +42,7 @@ func (r *mutationResolver) CreateEquipment(ctx context.Context, input model.NewE
 
 // CreateEquipmentProperty is the resolver for the createEquipmentProperty field.
 func (r *mutationResolver) CreateEquipmentProperty(ctx context.Context, input model.NewEquipmentProperty) (*model.EquipmentProperty, error) {
-	rows, err := db.Query("SELECT id, name, address, description FROM equipment WHERE id = $1", input.Equipment.ID)
+	rows, err := db.Query("SELECT id, name, description FROM equipment WHERE id = $1", input.Equipment.ID)
 	defer rows.Close()
 
 	if err != nil {

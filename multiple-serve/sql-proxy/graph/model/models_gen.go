@@ -9,12 +9,16 @@ type Equipment struct {
 	Properties  []*EquipmentProperty `json:"properties"`
 }
 
+func (Equipment) IsEntity() {}
+
 type EquipmentProperty struct {
 	ID          string     `json:"id"`
 	Description string     `json:"description"`
 	Address     *string    `json:"address,omitempty"`
 	Equipment   *Equipment `json:"equipment"`
 }
+
+func (EquipmentProperty) IsEntity() {}
 
 type EquipmentRef struct {
 	ID string `json:"id"`
