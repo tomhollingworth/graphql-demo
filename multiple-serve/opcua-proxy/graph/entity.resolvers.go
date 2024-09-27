@@ -6,14 +6,15 @@ package graph
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/thollingworth/graphql-demo/multiple-serve/opcua-proxy/domain"
 )
 
 // FindEquipmentPropertyByID is the resolver for the findEquipmentPropertyByID field.
 func (r *entityResolver) FindEquipmentPropertyByID(ctx context.Context, id string) (*domain.EquipmentProperty, error) {
-	panic(fmt.Errorf("not implemented: FindEquipmentPropertyByID - findEquipmentPropertyByID"))
+	return &domain.EquipmentProperty{
+		ID: id,
+	}, nil
 }
 
 // Entity returns EntityResolver implementation.

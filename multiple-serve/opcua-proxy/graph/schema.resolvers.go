@@ -7,46 +7,27 @@ package graph
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/thollingworth/graphql-demo/multiple-serve/opcua-proxy/domain"
 )
 
-// Timestamp is the resolver for the timestamp field.
-func (r *equipmentPropertyResolver) Timestamp(ctx context.Context, obj *domain.EquipmentProperty, federationRequires map[string]interface{}) (*time.Time, error) {
+// Current is the resolver for the current field.
+func (r *equipmentPropertyResolver) Current(ctx context.Context, obj *domain.EquipmentProperty, federationRequires map[string]interface{}) (*domain.Tag, error) {
 	if obj == nil {
 		return nil, fmt.Errorf("EquipmentProperty is nil")
 	}
-	result, err := r.Client.Read(ctx, *obj.Address)
-	if err != nil {
-		return nil, err
+	addressRaw, ok := federationRequires["address"]
+	if !ok {
+		return nil, fmt.Errorf("address not defined")
 	}
-	return &result.Timestamp, nil
-}
 
-// Datatype is the resolver for the datatype field.
-func (r *equipmentPropertyResolver) Datatype(ctx context.Context, obj *domain.EquipmentProperty, federationRequires map[string]interface{}) (*domain.DataType, error) {
-	if obj == nil {
-		return nil, fmt.Errorf("EquipmentProperty is nil")
+	address, ok := addressRaw.(string)
+	if !ok {
+		return nil, fmt.Errorf("address not a string")
 	}
-	result, err := r.Client.Read(ctx, *obj.Address)
-	if err != nil {
-		return nil, err
-	}
-	return &result.Datatype, nil
-}
 
-// Value is the resolver for the value field.
-func (r *equipmentPropertyResolver) Value(ctx context.Context, obj *domain.EquipmentProperty, federationRequires map[string]interface{}) (any, error) {
-	if obj == nil {
-		return nil, fmt.Errorf("EquipmentProperty is nil")
-	}
-	result, err := r.Client.Read(ctx, *obj.Address)
-	if err != nil {
-		return nil, err
-	}
-	return &result.Value, nil
+	return r.Client.Read(ctx, address)
 }
 
 // ReadTag is the resolver for the readTag field.

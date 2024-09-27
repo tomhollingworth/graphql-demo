@@ -55,11 +55,9 @@ type ComplexityRoot struct {
 	}
 
 	EquipmentProperty struct {
-		Address   func(childComplexity int) int
-		Datatype  func(childComplexity int, federationRequires map[string]interface{}) int
-		ID        func(childComplexity int) int
-		Timestamp func(childComplexity int, federationRequires map[string]interface{}) int
-		Value     func(childComplexity int, federationRequires map[string]interface{}) int
+		Address func(childComplexity int) int
+		Current func(childComplexity int, federationRequires map[string]interface{}) int
+		ID      func(childComplexity int) int
 	}
 
 	Query struct {
@@ -85,9 +83,7 @@ type EntityResolver interface {
 	FindEquipmentPropertyByID(ctx context.Context, id string) (*domain.EquipmentProperty, error)
 }
 type EquipmentPropertyResolver interface {
-	Timestamp(ctx context.Context, obj *domain.EquipmentProperty, federationRequires map[string]interface{}) (*time.Time, error)
-	Datatype(ctx context.Context, obj *domain.EquipmentProperty, federationRequires map[string]interface{}) (*domain.DataType, error)
-	Value(ctx context.Context, obj *domain.EquipmentProperty, federationRequires map[string]interface{}) (any, error)
+	Current(ctx context.Context, obj *domain.EquipmentProperty, federationRequires map[string]interface{}) (*domain.Tag, error)
 }
 type QueryResolver interface {
 	ReadTag(ctx context.Context, address string) (*domain.Tag, error)
@@ -157,17 +153,17 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.EquipmentProperty.Address(childComplexity), true
 
-	case "EquipmentProperty.datatype":
-		if e.complexity.EquipmentProperty.Datatype == nil {
+	case "EquipmentProperty.current":
+		if e.complexity.EquipmentProperty.Current == nil {
 			break
 		}
 
-		args, err := ec.field_EquipmentProperty_datatype_args(context.TODO(), rawArgs)
+		args, err := ec.field_EquipmentProperty_current_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.EquipmentProperty.Datatype(childComplexity, args["_federationRequires"].(map[string]interface{})), true
+		return e.complexity.EquipmentProperty.Current(childComplexity, args["_federationRequires"].(map[string]interface{})), true
 
 	case "EquipmentProperty.id":
 		if e.complexity.EquipmentProperty.ID == nil {
@@ -175,30 +171,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.EquipmentProperty.ID(childComplexity), true
-
-	case "EquipmentProperty.timestamp":
-		if e.complexity.EquipmentProperty.Timestamp == nil {
-			break
-		}
-
-		args, err := ec.field_EquipmentProperty_timestamp_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.EquipmentProperty.Timestamp(childComplexity, args["_federationRequires"].(map[string]interface{})), true
-
-	case "EquipmentProperty.value":
-		if e.complexity.EquipmentProperty.Value == nil {
-			break
-		}
-
-		args, err := ec.field_EquipmentProperty_value_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.EquipmentProperty.Value(childComplexity, args["_federationRequires"].(map[string]interface{})), true
 
 	case "Query.queryTag":
 		if e.complexity.Query.QueryTag == nil {
@@ -480,105 +452,17 @@ func (ec *executionContext) field_Entity_findEquipmentPropertyByID_argsID(
 	return zeroVal, nil
 }
 
-func (ec *executionContext) field_EquipmentProperty_datatype_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_EquipmentProperty_current_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	arg0, err := ec.field_EquipmentProperty_datatype_argsFederationRequires(ctx, rawArgs)
+	arg0, err := ec.field_EquipmentProperty_current_argsFederationRequires(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
 	args["_federationRequires"] = arg0
 	return args, nil
 }
-func (ec *executionContext) field_EquipmentProperty_datatype_argsFederationRequires(
-	ctx context.Context,
-	rawArgs map[string]interface{},
-) (map[string]interface{}, error) {
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("_federationRequires"))
-	directive0 := func(ctx context.Context) (interface{}, error) {
-		tmp, ok := rawArgs["_federationRequires"]
-		if !ok {
-			var zeroVal map[string]interface{}
-			return zeroVal, nil
-		}
-		return ec.unmarshalO_RequiresMap2map(ctx, tmp)
-	}
-
-	directive1 := func(ctx context.Context) (interface{}, error) {
-		return builtInDirectivePopulateFromRepresentations(ctx, rawArgs, directive0)
-	}
-
-	tmp, err := directive1(ctx)
-	if err != nil {
-		var zeroVal map[string]interface{}
-		return zeroVal, graphql.ErrorOnPath(ctx, err)
-	}
-	if data, ok := tmp.(map[string]interface{}); ok {
-		return data, nil
-	} else if tmp == nil {
-		var zeroVal map[string]interface{}
-		return zeroVal, nil
-	} else {
-		var zeroVal map[string]interface{}
-		return zeroVal, graphql.ErrorOnPath(ctx, fmt.Errorf(`unexpected type %T from directive, should be map[string]interface{}`, tmp))
-	}
-}
-
-func (ec *executionContext) field_EquipmentProperty_timestamp_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	arg0, err := ec.field_EquipmentProperty_timestamp_argsFederationRequires(ctx, rawArgs)
-	if err != nil {
-		return nil, err
-	}
-	args["_federationRequires"] = arg0
-	return args, nil
-}
-func (ec *executionContext) field_EquipmentProperty_timestamp_argsFederationRequires(
-	ctx context.Context,
-	rawArgs map[string]interface{},
-) (map[string]interface{}, error) {
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("_federationRequires"))
-	directive0 := func(ctx context.Context) (interface{}, error) {
-		tmp, ok := rawArgs["_federationRequires"]
-		if !ok {
-			var zeroVal map[string]interface{}
-			return zeroVal, nil
-		}
-		return ec.unmarshalO_RequiresMap2map(ctx, tmp)
-	}
-
-	directive1 := func(ctx context.Context) (interface{}, error) {
-		return builtInDirectivePopulateFromRepresentations(ctx, rawArgs, directive0)
-	}
-
-	tmp, err := directive1(ctx)
-	if err != nil {
-		var zeroVal map[string]interface{}
-		return zeroVal, graphql.ErrorOnPath(ctx, err)
-	}
-	if data, ok := tmp.(map[string]interface{}); ok {
-		return data, nil
-	} else if tmp == nil {
-		var zeroVal map[string]interface{}
-		return zeroVal, nil
-	} else {
-		var zeroVal map[string]interface{}
-		return zeroVal, graphql.ErrorOnPath(ctx, fmt.Errorf(`unexpected type %T from directive, should be map[string]interface{}`, tmp))
-	}
-}
-
-func (ec *executionContext) field_EquipmentProperty_value_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	arg0, err := ec.field_EquipmentProperty_value_argsFederationRequires(ctx, rawArgs)
-	if err != nil {
-		return nil, err
-	}
-	args["_federationRequires"] = arg0
-	return args, nil
-}
-func (ec *executionContext) field_EquipmentProperty_value_argsFederationRequires(
+func (ec *executionContext) field_EquipmentProperty_current_argsFederationRequires(
 	ctx context.Context,
 	rawArgs map[string]interface{},
 ) (map[string]interface{}, error) {
@@ -674,7 +558,7 @@ func (ec *executionContext) field_Query_queryTag_argsAddresses(
 ) ([]string, error) {
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("addresses"))
 	if tmp, ok := rawArgs["addresses"]; ok {
-		return ec.unmarshalNString2ᚕstringᚄ(ctx, tmp)
+		return ec.unmarshalNID2ᚕstringᚄ(ctx, tmp)
 	}
 
 	var zeroVal []string
@@ -697,7 +581,7 @@ func (ec *executionContext) field_Query_readTag_argsAddress(
 ) (string, error) {
 	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("address"))
 	if tmp, ok := rawArgs["address"]; ok {
-		return ec.unmarshalNString2string(ctx, tmp)
+		return ec.unmarshalNID2string(ctx, tmp)
 	}
 
 	var zeroVal string
@@ -801,12 +685,8 @@ func (ec *executionContext) fieldContext_Entity_findEquipmentPropertyByID(ctx co
 				return ec.fieldContext_EquipmentProperty_id(ctx, field)
 			case "address":
 				return ec.fieldContext_EquipmentProperty_address(ctx, field)
-			case "timestamp":
-				return ec.fieldContext_EquipmentProperty_timestamp(ctx, field)
-			case "datatype":
-				return ec.fieldContext_EquipmentProperty_datatype(ctx, field)
-			case "value":
-				return ec.fieldContext_EquipmentProperty_value(ctx, field)
+			case "current":
+				return ec.fieldContext_EquipmentProperty_current(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type EquipmentProperty", field.Name)
 		},
@@ -910,8 +790,8 @@ func (ec *executionContext) fieldContext_EquipmentProperty_address(_ context.Con
 	return fc, nil
 }
 
-func (ec *executionContext) _EquipmentProperty_timestamp(ctx context.Context, field graphql.CollectedField, obj *domain.EquipmentProperty) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_EquipmentProperty_timestamp(ctx, field)
+func (ec *executionContext) _EquipmentProperty_current(ctx context.Context, field graphql.CollectedField, obj *domain.EquipmentProperty) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_EquipmentProperty_current(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -924,7 +804,7 @@ func (ec *executionContext) _EquipmentProperty_timestamp(ctx context.Context, fi
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.EquipmentProperty().Timestamp(rctx, obj, fc.Args["_federationRequires"].(map[string]interface{}))
+		return ec.resolvers.EquipmentProperty().Current(rctx, obj, fc.Args["_federationRequires"].(map[string]interface{}))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -933,19 +813,29 @@ func (ec *executionContext) _EquipmentProperty_timestamp(ctx context.Context, fi
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*time.Time)
+	res := resTmp.(*domain.Tag)
 	fc.Result = res
-	return ec.marshalODateTime2ᚖtimeᚐTime(ctx, field.Selections, res)
+	return ec.marshalOTag2ᚖgithubᚗcomᚋthollingworthᚋgraphqlᚑdemoᚋmultipleᚑserveᚋopcuaᚑproxyᚋdomainᚐTag(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_EquipmentProperty_timestamp(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_EquipmentProperty_current(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "EquipmentProperty",
 		Field:      field,
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type DateTime does not have child fields")
+			switch field.Name {
+			case "address":
+				return ec.fieldContext_Tag_address(ctx, field)
+			case "timestamp":
+				return ec.fieldContext_Tag_timestamp(ctx, field)
+			case "datatype":
+				return ec.fieldContext_Tag_datatype(ctx, field)
+			case "value":
+				return ec.fieldContext_Tag_value(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Tag", field.Name)
 		},
 	}
 	defer func() {
@@ -955,111 +845,7 @@ func (ec *executionContext) fieldContext_EquipmentProperty_timestamp(ctx context
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_EquipmentProperty_timestamp_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _EquipmentProperty_datatype(ctx context.Context, field graphql.CollectedField, obj *domain.EquipmentProperty) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_EquipmentProperty_datatype(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.EquipmentProperty().Datatype(rctx, obj, fc.Args["_federationRequires"].(map[string]interface{}))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*domain.DataType)
-	fc.Result = res
-	return ec.marshalODataType2ᚖgithubᚗcomᚋthollingworthᚋgraphqlᚑdemoᚋmultipleᚑserveᚋopcuaᚑproxyᚋdomainᚐDataType(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_EquipmentProperty_datatype(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "EquipmentProperty",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type DataType does not have child fields")
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_EquipmentProperty_datatype_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _EquipmentProperty_value(ctx context.Context, field graphql.CollectedField, obj *domain.EquipmentProperty) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_EquipmentProperty_value(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.EquipmentProperty().Value(rctx, obj, fc.Args["_federationRequires"].(map[string]interface{}))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(any)
-	fc.Result = res
-	return ec.marshalOAny2interface(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_EquipmentProperty_value(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "EquipmentProperty",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Any does not have child fields")
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_EquipmentProperty_value_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_EquipmentProperty_current_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -1450,7 +1236,7 @@ func (ec *executionContext) _Tag_address(ctx context.Context, field graphql.Coll
 	}
 	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Tag_address(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1460,7 +1246,7 @@ func (ec *executionContext) fieldContext_Tag_address(_ context.Context, field gr
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type ID does not have child fields")
 		},
 	}
 	return fc, nil
@@ -3552,7 +3338,7 @@ func (ec *executionContext) _EquipmentProperty(ctx context.Context, sel ast.Sele
 			}
 		case "address":
 			out.Values[i] = ec._EquipmentProperty_address(ctx, field, obj)
-		case "timestamp":
+		case "current":
 			field := field
 
 			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
@@ -3561,73 +3347,7 @@ func (ec *executionContext) _EquipmentProperty(ctx context.Context, sel ast.Sele
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._EquipmentProperty_timestamp(ctx, field, obj)
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-		case "datatype":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._EquipmentProperty_datatype(ctx, field, obj)
-				return res
-			}
-
-			if field.Deferrable != nil {
-				dfs, ok := deferred[field.Deferrable.Label]
-				di := 0
-				if ok {
-					dfs.AddField(field)
-					di = len(dfs.Values) - 1
-				} else {
-					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
-					deferred[field.Deferrable.Label] = dfs
-				}
-				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
-					return innerFunc(ctx, dfs)
-				})
-
-				// don't run the out.Concurrently() call below
-				out.Values[i] = graphql.Null
-				continue
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-		case "value":
-			field := field
-
-			innerFunc := func(ctx context.Context, _ *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._EquipmentProperty_value(ctx, field, obj)
+				res = ec._EquipmentProperty_current(ctx, field, obj)
 				return res
 			}
 
@@ -4327,6 +4047,38 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 	return res
 }
 
+func (ec *executionContext) unmarshalNID2ᚕstringᚄ(ctx context.Context, v interface{}) ([]string, error) {
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]string, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalNID2string(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalNID2ᚕstringᚄ(ctx context.Context, sel ast.SelectionSet, v []string) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	for i := range v {
+		ret[i] = ec.marshalNID2string(ctx, sel, v[i])
+	}
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
 	res, err := graphql.UnmarshalString(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -4340,38 +4092,6 @@ func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.S
 		}
 	}
 	return res
-}
-
-func (ec *executionContext) unmarshalNString2ᚕstringᚄ(ctx context.Context, v interface{}) ([]string, error) {
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
-	var err error
-	res := make([]string, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNString2string(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
-}
-
-func (ec *executionContext) marshalNString2ᚕstringᚄ(ctx context.Context, sel ast.SelectionSet, v []string) graphql.Marshaler {
-	ret := make(graphql.Array, len(v))
-	for i := range v {
-		ret[i] = ec.marshalNString2string(ctx, sel, v[i])
-	}
-
-	for _, e := range ret {
-		if e == graphql.Null {
-			return graphql.Null
-		}
-	}
-
-	return ret
 }
 
 func (ec *executionContext) unmarshalN_Any2map(ctx context.Context, v interface{}) (map[string]interface{}, error) {
@@ -4880,22 +4600,6 @@ func (ec *executionContext) marshalNfederation__Scope2ᚕᚕstringᚄ(ctx contex
 	return ret
 }
 
-func (ec *executionContext) unmarshalOAny2interface(ctx context.Context, v interface{}) (any, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := graphql.UnmarshalAny(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOAny2interface(ctx context.Context, sel ast.SelectionSet, v any) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	res := graphql.MarshalAny(v)
-	return res
-}
-
 func (ec *executionContext) unmarshalOBoolean2bool(ctx context.Context, v interface{}) (bool, error) {
 	res, err := graphql.UnmarshalBoolean(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -4919,38 +4623,6 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 		return graphql.Null
 	}
 	res := graphql.MarshalBoolean(*v)
-	return res
-}
-
-func (ec *executionContext) unmarshalODataType2ᚖgithubᚗcomᚋthollingworthᚋgraphqlᚑdemoᚋmultipleᚑserveᚋopcuaᚑproxyᚋdomainᚐDataType(ctx context.Context, v interface{}) (*domain.DataType, error) {
-	if v == nil {
-		return nil, nil
-	}
-	var res = new(domain.DataType)
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalODataType2ᚖgithubᚗcomᚋthollingworthᚋgraphqlᚑdemoᚋmultipleᚑserveᚋopcuaᚑproxyᚋdomainᚐDataType(ctx context.Context, sel ast.SelectionSet, v *domain.DataType) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return v
-}
-
-func (ec *executionContext) unmarshalODateTime2ᚖtimeᚐTime(ctx context.Context, v interface{}) (*time.Time, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := domain.UnmarshalDateTime(v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalODateTime2ᚖtimeᚐTime(ctx context.Context, sel ast.SelectionSet, v *time.Time) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	res := domain.MarshalDateTime(*v)
 	return res
 }
 

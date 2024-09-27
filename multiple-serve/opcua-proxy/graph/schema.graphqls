@@ -26,22 +26,20 @@ enum DataType {
   OTHER
 }
 
-extend type EquipmentProperty @key(fields: "id") {
-  id:ID! @external
-  address:String @external
-  timestamp: DateTime @requires(fields: "address") @provides(fields:["datatype", "value"])
-  datatype: DataType @requires(fields: "address") @provides(fields:["timestamp", "value"])
-  value: Any @requires(fields: "address") @provides(fields:["timestamp", "datatype"])
+type EquipmentProperty @key(fields: "id") {
+  id:ID!
+  address: String @external
+  current: Tag @requires(fields: "address")
 }
 
 type Tag {
-  address: String!
+  address: ID!
   timestamp: DateTime!
   datatype: DataType!
   value: Any!
 }
 
 type Query{
-  readTag(address: String!): Tag
-  queryTag(addresses: [String!]!): [Tag]
+  readTag(address: ID!): Tag
+  queryTag(addresses: [ID!]!): [Tag]
 }

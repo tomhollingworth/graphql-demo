@@ -15,11 +15,9 @@ type DateTimeRange struct {
 }
 
 type EquipmentProperty struct {
-	ID        string     `json:"id"`
-	Address   *string    `json:"address,omitempty"`
-	Timestamp *time.Time `json:"timestamp,omitempty"`
-	Datatype  *DataType  `json:"datatype,omitempty"`
-	Value     any        `json:"value,omitempty"`
+	ID      string  `json:"id"`
+	Address *string `json:"address,omitempty"`
+	Current *Tag    `json:"current,omitempty"`
 }
 
 func (EquipmentProperty) IsEntity() {}
