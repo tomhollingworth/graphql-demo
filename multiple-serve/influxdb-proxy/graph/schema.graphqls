@@ -8,7 +8,6 @@ directive @goModel(model: String, models: [String!]) on OBJECT
 directive @goField(forceResolver: Boolean, name: String) on INPUT_FIELD_DEFINITION
   | FIELD_DEFINITION
 
-
 scalar DateTime
 
 input DateTimeRange {
@@ -18,11 +17,12 @@ input DateTimeRange {
 
 extend type EquipmentProperty @key(fields: "id") {
   id:ID! @external
-  history(filter: DateTimeRange): [History]
+  address: String @external
+  history(filter: DateTimeRange): [History] @requires(fields: "address")
 }
 
 type History {
-  equipmentProperty: EquipmentProperty! @external
+  address: String!
   timestamp: DateTime!
   value: String!
   datatype: DataType!
@@ -32,22 +32,25 @@ enum DataType {
   STRING
   INT
   FLOAT
+  UNKNOWN
+  BOOLEAN
+  OTHER
 }
 
 input FilterHistory {
   timestamp: DateTimeRange
-  propertyID: String
+  address: String
 }
 
 type Query {
   history(filter:FilterHistory!): [History!]!
 }
 
-input NewHistory {  
-  propertyID: String!
+input NewHistory {
+  address: String!
   timestamp: DateTime!
   value: String!
-  datatype: DataType! 
+  datatype: DataType!
 }
 
 type Mutation {

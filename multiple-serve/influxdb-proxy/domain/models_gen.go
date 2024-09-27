@@ -23,25 +23,25 @@ type EquipmentProperty struct {
 func (EquipmentProperty) IsEntity() {}
 
 type FilterHistory struct {
-	Timestamp  *DateTimeRange `json:"timestamp,omitempty"`
-	PropertyID *string        `json:"propertyID,omitempty"`
+	Timestamp *DateTimeRange `json:"timestamp,omitempty"`
+	Address   *string        `json:"address,omitempty"`
 }
 
 type History struct {
-	EquipmentProperty *EquipmentProperty `json:"equipmentProperty"`
-	Timestamp         time.Time          `json:"timestamp"`
-	Value             string             `json:"value"`
-	Datatype          DataType           `json:"datatype"`
+	Address   string    `json:"address"`
+	Timestamp time.Time `json:"timestamp"`
+	Value     string    `json:"value"`
+	Datatype  DataType  `json:"datatype"`
 }
 
 type Mutation struct {
 }
 
 type NewHistory struct {
-	PropertyID string    `json:"propertyID"`
-	Timestamp  time.Time `json:"timestamp"`
-	Value      string    `json:"value"`
-	Datatype   DataType  `json:"datatype"`
+	Address   string    `json:"address"`
+	Timestamp time.Time `json:"timestamp"`
+	Value     string    `json:"value"`
+	Datatype  DataType  `json:"datatype"`
 }
 
 type Query struct {

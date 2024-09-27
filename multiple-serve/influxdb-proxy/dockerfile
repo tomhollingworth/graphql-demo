@@ -33,6 +33,8 @@ FROM scratch
 #copy the build file and the timezone info into scratch
 COPY --from=builder /dist/influxdb-proxy /
 
+ENV INFLUX_ENDPOINT http://influxdb:8086
+
 EXPOSE 8082
 
 # COPY --from=builder /usr/local/go/lib/time/zoneinfo.zip /
