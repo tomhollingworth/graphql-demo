@@ -10,10 +10,10 @@ import (
 	"github.com/thollingworth/graphql-demo/multiple-serve/opcua-proxy/domain"
 )
 
-// FindEquipmentPropertyByID is the resolver for the findEquipmentPropertyByID field.
-func (r *entityResolver) FindEquipmentPropertyByID(ctx context.Context, id string) (*domain.EquipmentProperty, error) {
+// FindEquipmentPropertyByIid is the resolver for the findEquipmentPropertyByIid field.
+func (r *entityResolver) FindEquipmentPropertyByIid(ctx context.Context, iid string) (*domain.EquipmentProperty, error) {
 	return &domain.EquipmentProperty{
-		ID: id,
+		Iid: iid,
 	}, nil
 }
 

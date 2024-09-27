@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   influxdb:
     image: influxdb:2.6-alpine
@@ -9,15 +7,27 @@ services:
     volumes:
       # Mount for influxdb data directory and configuration
       - influxdbv2:/var/lib/influxdb2:rw
+    healthcheck:
+      test: curl --fail http://localhost:8086 || exit 1
+      interval: 60s
+      retries: 5
+      start_period: 20s
+      timeout: 10s
     ports:
       - 8086:8086
   influxdb-proxy:
     build: ./influxdb-proxy
     container_name: influxdb-proxy
     depends_on:
-      - influxdb
+      influxdb:
+        condition: service_healthy
     ports:
-      - "8080:8080"
+      - "8082:8082"
+  opcua-proxy:
+    build: ./opcua-proxy
+    container_name: opcua-proxy
+    ports:
+      - "8083:8083"
   postgres:
     image: postgres:15-alpine
     container_name: postgres
@@ -27,25 +37,70 @@ services:
       - postgres:/var/lib/postgresql/data
     env_file:
       - postgres.env
-  sql-proxy:
-    build: ./sql-proxy
-    container_name: sql-graphql
-    depends_on:
-      - postgres
+  rhize:
+    image: registry.gitlab.com/libremfg/libre-schema:latest
+    container_name: rhize
     ports:
-      - "8081:8081"
+      - 8080:8080
+    command: >
+      sh -c "if [ ! -d \"/rhize/p\" ]; then mv /dgraph/* /rhize; fi
+        dgraph zero --my=localhost:5080 --wal=/rhize/zw &
+        ( sleep 3 && dgraph alpha --my=localhost:7080 --postings=/rhize/p --security=whitelist=0.0.0.0/0 --tmp=/rhize/t --wal=/rhize/w --zero=localhost:5080 --oidc='bypass=true;url=http://keycloak:8080;realm=libre;client-id=libreBaas;client-secret=abc') &
+        chmod +x /etc/baas/postSchema.sh &
+        sleep 20 && /etc/baas/postSchema.sh http://keycloak:8080 libre libreBaas
+        wait"
+    healthcheck:
+      test: curl --fail http://localhost:8080 || exit 1
+      interval: 60s
+      retries: 5
+      start_period: 20s
+      timeout: 10s
   router:
-    image: ghcr.io/apollographql/router:v1.15.1
+    image: ghcr.io/apollographql/router:v1.55.0 #v1.15.1
     container_name: router
     depends_on:
       - sql-proxy
       - influxdb-proxy
+      - rhize
+      - opcua-proxy
     command: --config /dist/config/router.yaml --supergraph /dist/config/schema.graphql
+    environment:
+      - APOLLO_ROUTER_LOG=trace
     ports:
       - 80:80
     volumes: 
       - ./router/config.yaml:/dist/config/router.yaml
-      - ./router/supergraph.graphql:/dist/config/schema.graphql
+      - ./router/supergraph.graphql:/dist/config/schema.graphql:ro
+  router-init:
+    image: registry.gitlab.com/libremfg/libre-router-init:latest
+    container_name: router-init
+    depends_on:
+      # Comment out the following lines if you are not using the respective services
+      rhize:
+        condition: service_started
+      opcua-proxy:
+        condition: service_started
+      influxdb-proxy:
+        condition: service_started
+    volumes:
+      - ./router/supergraph.graphql:/data/supergraph.graphql
+      - ./router/supergraph.yaml:/supergraph/supergraph.yaml:ro
+      - ./router/config.json:/etc/libre-baas-proxy/config.json:ro
+  sql-proxy:
+    build: ./sql-proxy
+    container_name: sql-proxy
+    depends_on:
+      - postgres
+    environment:
+      - PORT=8081
+    ports:
+      - "8081:8081"
+  telegraf:
+    image: telegraf:latest
+    container_name: telegraf
+    volumes:
+      - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
 volumes:
   influxdbv2:
   postgres:
+  router-supergraph:

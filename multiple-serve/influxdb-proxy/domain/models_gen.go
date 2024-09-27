@@ -15,7 +15,7 @@ type DateTimeRange struct {
 }
 
 type EquipmentProperty struct {
-	ID      string     `json:"id"`
+	Iid     string     `json:"iid"`
 	Address *string    `json:"address,omitempty"`
 	History []*History `json:"history,omitempty"`
 }
@@ -28,70 +28,70 @@ type FilterHistory struct {
 }
 
 type History struct {
-	Address   string    `json:"address"`
-	Timestamp time.Time `json:"timestamp"`
-	Value     string    `json:"value"`
-	Datatype  DataType  `json:"datatype"`
+	Address   string        `json:"address"`
+	Timestamp time.Time     `json:"timestamp"`
+	Value     string        `json:"value"`
+	Datatype  OpcUaDataType `json:"datatype"`
 }
 
 type Mutation struct {
 }
 
 type NewHistory struct {
-	Address   string    `json:"address"`
-	Timestamp time.Time `json:"timestamp"`
-	Value     string    `json:"value"`
-	Datatype  DataType  `json:"datatype"`
+	Address   string        `json:"address"`
+	Timestamp time.Time     `json:"timestamp"`
+	Value     string        `json:"value"`
+	Datatype  OpcUaDataType `json:"datatype"`
 }
 
 type Query struct {
 }
 
-type DataType string
+type OpcUaDataType string
 
 const (
-	DataTypeString  DataType = "STRING"
-	DataTypeInt     DataType = "INT"
-	DataTypeFloat   DataType = "FLOAT"
-	DataTypeUnknown DataType = "UNKNOWN"
-	DataTypeBoolean DataType = "BOOLEAN"
-	DataTypeOther   DataType = "OTHER"
+	OpcUaDataTypeString  OpcUaDataType = "STRING"
+	OpcUaDataTypeInt     OpcUaDataType = "INT"
+	OpcUaDataTypeFloat   OpcUaDataType = "FLOAT"
+	OpcUaDataTypeUnknown OpcUaDataType = "UNKNOWN"
+	OpcUaDataTypeBoolean OpcUaDataType = "BOOLEAN"
+	OpcUaDataTypeOther   OpcUaDataType = "OTHER"
 )
 
-var AllDataType = []DataType{
-	DataTypeString,
-	DataTypeInt,
-	DataTypeFloat,
-	DataTypeUnknown,
-	DataTypeBoolean,
-	DataTypeOther,
+var AllOpcUaDataType = []OpcUaDataType{
+	OpcUaDataTypeString,
+	OpcUaDataTypeInt,
+	OpcUaDataTypeFloat,
+	OpcUaDataTypeUnknown,
+	OpcUaDataTypeBoolean,
+	OpcUaDataTypeOther,
 }
 
-func (e DataType) IsValid() bool {
+func (e OpcUaDataType) IsValid() bool {
 	switch e {
-	case DataTypeString, DataTypeInt, DataTypeFloat, DataTypeUnknown, DataTypeBoolean, DataTypeOther:
+	case OpcUaDataTypeString, OpcUaDataTypeInt, OpcUaDataTypeFloat, OpcUaDataTypeUnknown, OpcUaDataTypeBoolean, OpcUaDataTypeOther:
 		return true
 	}
 	return false
 }
 
-func (e DataType) String() string {
+func (e OpcUaDataType) String() string {
 	return string(e)
 }
 
-func (e *DataType) UnmarshalGQL(v interface{}) error {
+func (e *OpcUaDataType) UnmarshalGQL(v interface{}) error {
 	str, ok := v.(string)
 	if !ok {
 		return fmt.Errorf("enums must be strings")
 	}
 
-	*e = DataType(str)
+	*e = OpcUaDataType(str)
 	if !e.IsValid() {
-		return fmt.Errorf("%s is not a valid DataType", str)
+		return fmt.Errorf("%s is not a valid OpcUaDataType", str)
 	}
 	return nil
 }
 
-func (e DataType) MarshalGQL(w io.Writer) {
+func (e OpcUaDataType) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }

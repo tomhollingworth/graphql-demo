@@ -56,7 +56,7 @@ func (r *equipmentPropertyResolver) History(ctx context.Context, obj *domain.Equ
 			v := result.Record().ValueByKey(addr)
 			h := domain.History{
 				Address:   addr,
-				Datatype:  domain.DataType(dt),
+				Datatype:  domain.OpcUaDataType(dt),
 				Value:     fmt.Sprintf("%v", v),
 				Timestamp: result.Record().Time(),
 			}
@@ -73,7 +73,6 @@ func (r *equipmentPropertyResolver) History(ctx context.Context, obj *domain.Equ
 	client.Close()
 
 	return history, nil
-
 }
 
 // CreateHistory is the resolver for the createHistory field.
@@ -139,7 +138,7 @@ func (r *queryResolver) History(ctx context.Context, filter domain.FilterHistory
 			v := result.Record().ValueByKey(addr)
 			h := domain.History{
 				Address:   addr,
-				Datatype:  domain.DataType(dt),
+				Datatype:  domain.OpcUaDataType(dt),
 				Value:     fmt.Sprintf("%v", v),
 				Timestamp: result.Record().Time(),
 			}

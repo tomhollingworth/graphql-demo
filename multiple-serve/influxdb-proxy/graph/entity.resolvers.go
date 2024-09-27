@@ -10,9 +10,9 @@ import (
 	"github.com/tomhollingworth/graphql-demo/multiple-serve/influxdb-proxy/domain"
 )
 
-// FindEquipmentPropertyByID is the resolver for the findEquipmentPropertyByID field.
-func (r *entityResolver) FindEquipmentPropertyByID(ctx context.Context, id string) (*domain.EquipmentProperty, error) {
-	return &domain.EquipmentProperty{ID: id}, nil
+// FindEquipmentPropertyByIid is the resolver for the findEquipmentPropertyByIid field.
+func (r *entityResolver) FindEquipmentPropertyByIid(ctx context.Context, iid string) (*domain.EquipmentProperty, error) {
+	return &domain.EquipmentProperty{Iid: iid}, nil
 }
 
 // Entity returns EntityResolver implementation.

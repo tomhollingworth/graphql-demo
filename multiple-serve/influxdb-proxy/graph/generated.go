@@ -52,13 +52,13 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	Entity struct {
-		FindEquipmentPropertyByID func(childComplexity int, id string) int
+		FindEquipmentPropertyByIid func(childComplexity int, iid string) int
 	}
 
 	EquipmentProperty struct {
 		Address func(childComplexity int) int
 		History func(childComplexity int, filter *domain.DateTimeRange, federationRequires map[string]interface{}) int
-		ID      func(childComplexity int) int
+		Iid     func(childComplexity int) int
 	}
 
 	History struct {
@@ -84,7 +84,7 @@ type ComplexityRoot struct {
 }
 
 type EntityResolver interface {
-	FindEquipmentPropertyByID(ctx context.Context, id string) (*domain.EquipmentProperty, error)
+	FindEquipmentPropertyByIid(ctx context.Context, iid string) (*domain.EquipmentProperty, error)
 }
 type EquipmentPropertyResolver interface {
 	History(ctx context.Context, obj *domain.EquipmentProperty, filter *domain.DateTimeRange, federationRequires map[string]interface{}) ([]*domain.History, error)
@@ -140,17 +140,17 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 	_ = ec
 	switch typeName + "." + field {
 
-	case "Entity.findEquipmentPropertyByID":
-		if e.complexity.Entity.FindEquipmentPropertyByID == nil {
+	case "Entity.findEquipmentPropertyByIid":
+		if e.complexity.Entity.FindEquipmentPropertyByIid == nil {
 			break
 		}
 
-		args, err := ec.field_Entity_findEquipmentPropertyByID_args(context.TODO(), rawArgs)
+		args, err := ec.field_Entity_findEquipmentPropertyByIid_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Entity.FindEquipmentPropertyByID(childComplexity, args["id"].(string)), true
+		return e.complexity.Entity.FindEquipmentPropertyByIid(childComplexity, args["iid"].(string)), true
 
 	case "EquipmentProperty.address":
 		if e.complexity.EquipmentProperty.Address == nil {
@@ -171,12 +171,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.EquipmentProperty.History(childComplexity, args["filter"].(*domain.DateTimeRange), args["_federationRequires"].(map[string]interface{})), true
 
-	case "EquipmentProperty.id":
-		if e.complexity.EquipmentProperty.ID == nil {
+	case "EquipmentProperty.iid":
+		if e.complexity.EquipmentProperty.Iid == nil {
 			break
 		}
 
-		return e.complexity.EquipmentProperty.ID(childComplexity), true
+		return e.complexity.EquipmentProperty.Iid(childComplexity), true
 
 	case "History.address":
 		if e.complexity.History.Address == nil {
@@ -433,7 +433,7 @@ union _Entity = EquipmentProperty
 
 # fake type to build resolver interfaces for users to implement
 type Entity {
-	findEquipmentPropertyByID(id: ID!,): EquipmentProperty!
+	findEquipmentPropertyByIid(iid: ID!,): EquipmentProperty!
 }
 
 type _Service {
@@ -452,22 +452,22 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 
 // region    ***************************** args.gotpl *****************************
 
-func (ec *executionContext) field_Entity_findEquipmentPropertyByID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Entity_findEquipmentPropertyByIid_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	arg0, err := ec.field_Entity_findEquipmentPropertyByID_argsID(ctx, rawArgs)
+	arg0, err := ec.field_Entity_findEquipmentPropertyByIid_argsIid(ctx, rawArgs)
 	if err != nil {
 		return nil, err
 	}
-	args["id"] = arg0
+	args["iid"] = arg0
 	return args, nil
 }
-func (ec *executionContext) field_Entity_findEquipmentPropertyByID_argsID(
+func (ec *executionContext) field_Entity_findEquipmentPropertyByIid_argsIid(
 	ctx context.Context,
 	rawArgs map[string]interface{},
 ) (string, error) {
-	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-	if tmp, ok := rawArgs["id"]; ok {
+	ctx = graphql.WithPathContext(ctx, graphql.NewPathWithField("iid"))
+	if tmp, ok := rawArgs["iid"]; ok {
 		return ec.unmarshalNID2string(ctx, tmp)
 	}
 
@@ -683,8 +683,8 @@ func (ec *executionContext) field___Type_fields_argsIncludeDeprecated(
 
 // region    **************************** field.gotpl *****************************
 
-func (ec *executionContext) _Entity_findEquipmentPropertyByID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Entity_findEquipmentPropertyByID(ctx, field)
+func (ec *executionContext) _Entity_findEquipmentPropertyByIid(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Entity_findEquipmentPropertyByIid(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -697,7 +697,7 @@ func (ec *executionContext) _Entity_findEquipmentPropertyByID(ctx context.Contex
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Entity().FindEquipmentPropertyByID(rctx, fc.Args["id"].(string))
+		return ec.resolvers.Entity().FindEquipmentPropertyByIid(rctx, fc.Args["iid"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -714,7 +714,7 @@ func (ec *executionContext) _Entity_findEquipmentPropertyByID(ctx context.Contex
 	return ec.marshalNEquipmentProperty2ᚖgithubᚗcomᚋtomhollingworthᚋgraphqlᚑdemoᚋmultipleᚑserveᚋinfluxdbᚑproxyᚋdomainᚐEquipmentProperty(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Entity_findEquipmentPropertyByID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Entity_findEquipmentPropertyByIid(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Entity",
 		Field:      field,
@@ -722,8 +722,8 @@ func (ec *executionContext) fieldContext_Entity_findEquipmentPropertyByID(ctx co
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "id":
-				return ec.fieldContext_EquipmentProperty_id(ctx, field)
+			case "iid":
+				return ec.fieldContext_EquipmentProperty_iid(ctx, field)
 			case "address":
 				return ec.fieldContext_EquipmentProperty_address(ctx, field)
 			case "history":
@@ -739,15 +739,15 @@ func (ec *executionContext) fieldContext_Entity_findEquipmentPropertyByID(ctx co
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Entity_findEquipmentPropertyByID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Entity_findEquipmentPropertyByIid_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _EquipmentProperty_id(ctx context.Context, field graphql.CollectedField, obj *domain.EquipmentProperty) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_EquipmentProperty_id(ctx, field)
+func (ec *executionContext) _EquipmentProperty_iid(ctx context.Context, field graphql.CollectedField, obj *domain.EquipmentProperty) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_EquipmentProperty_iid(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -760,7 +760,7 @@ func (ec *executionContext) _EquipmentProperty_id(ctx context.Context, field gra
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
+		return obj.Iid, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -777,7 +777,7 @@ func (ec *executionContext) _EquipmentProperty_id(ctx context.Context, field gra
 	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_EquipmentProperty_id(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_EquipmentProperty_iid(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "EquipmentProperty",
 		Field:      field,
@@ -1051,9 +1051,9 @@ func (ec *executionContext) _History_datatype(ctx context.Context, field graphql
 		}
 		return graphql.Null
 	}
-	res := resTmp.(domain.DataType)
+	res := resTmp.(domain.OpcUaDataType)
 	fc.Result = res
-	return ec.marshalNDataType2githubᚗcomᚋtomhollingworthᚋgraphqlᚑdemoᚋmultipleᚑserveᚋinfluxdbᚑproxyᚋdomainᚐDataType(ctx, field.Selections, res)
+	return ec.marshalNOpcUaDataType2githubᚗcomᚋtomhollingworthᚋgraphqlᚑdemoᚋmultipleᚑserveᚋinfluxdbᚑproxyᚋdomainᚐOpcUaDataType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_History_datatype(_ context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1063,7 +1063,7 @@ func (ec *executionContext) fieldContext_History_datatype(_ context.Context, fie
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type DataType does not have child fields")
+			return nil, errors.New("field of type OpcUaDataType does not have child fields")
 		},
 	}
 	return fc, nil
@@ -3350,7 +3350,7 @@ func (ec *executionContext) unmarshalInputNewHistory(ctx context.Context, obj in
 			it.Value = data
 		case "datatype":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("datatype"))
-			data, err := ec.unmarshalNDataType2githubᚗcomᚋtomhollingworthᚋgraphqlᚑdemoᚋmultipleᚑserveᚋinfluxdbᚑproxyᚋdomainᚐDataType(ctx, v)
+			data, err := ec.unmarshalNOpcUaDataType2githubᚗcomᚋtomhollingworthᚋgraphqlᚑdemoᚋmultipleᚑserveᚋinfluxdbᚑproxyᚋdomainᚐOpcUaDataType(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -3404,7 +3404,7 @@ func (ec *executionContext) _Entity(ctx context.Context, sel ast.SelectionSet) g
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Entity")
-		case "findEquipmentPropertyByID":
+		case "findEquipmentPropertyByIid":
 			field := field
 
 			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
@@ -3413,7 +3413,7 @@ func (ec *executionContext) _Entity(ctx context.Context, sel ast.SelectionSet) g
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Entity_findEquipmentPropertyByID(ctx, field)
+				res = ec._Entity_findEquipmentPropertyByIid(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
@@ -3460,8 +3460,8 @@ func (ec *executionContext) _EquipmentProperty(ctx context.Context, sel ast.Sele
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("EquipmentProperty")
-		case "id":
-			out.Values[i] = ec._EquipmentProperty_id(ctx, field, obj)
+		case "iid":
+			out.Values[i] = ec._EquipmentProperty_iid(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
@@ -4119,16 +4119,6 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) unmarshalNDataType2githubᚗcomᚋtomhollingworthᚋgraphqlᚑdemoᚋmultipleᚑserveᚋinfluxdbᚑproxyᚋdomainᚐDataType(ctx context.Context, v interface{}) (domain.DataType, error) {
-	var res domain.DataType
-	err := res.UnmarshalGQL(v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalNDataType2githubᚗcomᚋtomhollingworthᚋgraphqlᚑdemoᚋmultipleᚑserveᚋinfluxdbᚑproxyᚋdomainᚐDataType(ctx context.Context, sel ast.SelectionSet, v domain.DataType) graphql.Marshaler {
-	return v
-}
-
 func (ec *executionContext) unmarshalNDateTime2timeᚐTime(ctx context.Context, v interface{}) (time.Time, error) {
 	res, err := domain.UnmarshalDateTime(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -4254,6 +4244,16 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 func (ec *executionContext) unmarshalNNewHistory2githubᚗcomᚋtomhollingworthᚋgraphqlᚑdemoᚋmultipleᚑserveᚋinfluxdbᚑproxyᚋdomainᚐNewHistory(ctx context.Context, v interface{}) (domain.NewHistory, error) {
 	res, err := ec.unmarshalInputNewHistory(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNOpcUaDataType2githubᚗcomᚋtomhollingworthᚋgraphqlᚑdemoᚋmultipleᚑserveᚋinfluxdbᚑproxyᚋdomainᚐOpcUaDataType(ctx context.Context, v interface{}) (domain.OpcUaDataType, error) {
+	var res domain.OpcUaDataType
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNOpcUaDataType2githubᚗcomᚋtomhollingworthᚋgraphqlᚑdemoᚋmultipleᚑserveᚋinfluxdbᚑproxyᚋdomainᚐOpcUaDataType(ctx context.Context, sel ast.SelectionSet, v domain.OpcUaDataType) graphql.Marshaler {
+	return v
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {

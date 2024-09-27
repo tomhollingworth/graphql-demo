@@ -160,12 +160,12 @@ func (ec *executionContext) resolveEntity(
 		}
 		switch resolverName {
 
-		case "findEquipmentPropertyByID":
-			id0, err := ec.unmarshalNID2string(ctx, rep["id"])
+		case "findEquipmentPropertyByIid":
+			id0, err := ec.unmarshalNID2string(ctx, rep["iid"])
 			if err != nil {
-				return nil, fmt.Errorf(`unmarshalling param 0 for findEquipmentPropertyByID(): %w`, err)
+				return nil, fmt.Errorf(`unmarshalling param 0 for findEquipmentPropertyByIid(): %w`, err)
 			}
-			entity, err := ec.resolvers.Entity().FindEquipmentPropertyByID(ctx, id0)
+			entity, err := ec.resolvers.Entity().FindEquipmentPropertyByIid(ctx, id0)
 			if err != nil {
 				return nil, fmt.Errorf(`resolving Entity "EquipmentProperty": %w`, err)
 			}
@@ -210,7 +210,7 @@ func entityResolverNameForEquipmentProperty(ctx context.Context, rep EntityRepre
 		// we shouldn't use use it
 		allNull := true
 		m = rep
-		val, ok = m["id"]
+		val, ok = m["iid"]
 		if !ok {
 			break
 		}
@@ -220,7 +220,7 @@ func entityResolverNameForEquipmentProperty(ctx context.Context, rep EntityRepre
 		if allNull {
 			break
 		}
-		return "findEquipmentPropertyByID", nil
+		return "findEquipmentPropertyByIid", nil
 	}
 	return "", fmt.Errorf("%w for EquipmentProperty", ErrTypeNotFound)
 }

@@ -15,8 +15,8 @@ input DateTimeRange {
   min: DateTime!
 }
 
-extend type EquipmentProperty @key(fields: "id") {
-  id:ID! @external
+extend type EquipmentProperty @key(fields: "iid") {
+  iid:ID! @external
   address: String @external
   history(filter: DateTimeRange): [History] @requires(fields: "address")
 }
@@ -25,10 +25,10 @@ type History {
   address: String!
   timestamp: DateTime!
   value: String!
-  datatype: DataType!
+  datatype: OpcUaDataType!
 }
 
-enum DataType {
+enum OpcUaDataType {
   STRING
   INT
   FLOAT
@@ -50,7 +50,7 @@ input NewHistory {
   address: String!
   timestamp: DateTime!
   value: String!
-  datatype: DataType!
+  datatype: OpcUaDataType!
 }
 
 type Mutation {

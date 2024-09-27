@@ -17,7 +17,7 @@ input DateTimeRange {
   min: DateTime!
 }
 
-enum DataType {
+enum OpcUaDataType {
   STRING
   INT
   FLOAT
@@ -26,8 +26,8 @@ enum DataType {
   OTHER
 }
 
-type EquipmentProperty @key(fields: "id") {
-  id:ID!
+type EquipmentProperty @key(fields: "iid") {
+  iid:ID!
   address: String @external
   current: Tag @requires(fields: "address")
 }
@@ -35,7 +35,7 @@ type EquipmentProperty @key(fields: "id") {
 type Tag {
   address: ID!
   timestamp: DateTime!
-  datatype: DataType!
+  datatype: OpcUaDataType!
   value: Any!
 }
 

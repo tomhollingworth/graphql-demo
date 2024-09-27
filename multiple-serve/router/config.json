@@ -1,0 +1,7 @@
+{
+    "url": "http://rhize:8080/graphql",
+    "port": "8080",
+    "OIDC": {
+        "bypass": true
+    }
+}

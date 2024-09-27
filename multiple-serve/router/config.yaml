@@ -7,8 +7,11 @@ homepage:
   enabled: false
 sandbox:
   enabled: true
-override_subgraph_url:
-  sql: "http://sql-proxy:8081/query"
-  influx: "http://influxdb-proxy:8080/query"
+# override_subgraph_url:
+#   # Comment out the following line if you are not using the respective service
+#   influx: "http://influxdb-proxy:8082/query"
+#   opcua: "http://opcua-proxy:8083/query"
+#   # rhize: "http://rhize:8080/query"
+#   sql: "http://sql-proxy:8081/query"
 include_subgraph_errors:
   all: true
